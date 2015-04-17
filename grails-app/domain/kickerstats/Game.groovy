@@ -3,7 +3,7 @@ package kickerstats
 class Game implements Serializable {
 
     Challenge challenge
-    Team winner, looser
+    Team winner, loser
     Integer winnerScore = MAX_SCORE, loserScore
 
     static final MAX_SCORE = 6
@@ -15,7 +15,7 @@ class Game implements Serializable {
             !val.finished
         })
         winner(nullable: false)
-        looser(nullable: false, validator: { val, obj ->
+        loser(nullable: false, validator: { val, obj ->
             val != obj.winner
         })
         winnerScore(nullable: false, validator: { val, obj ->
