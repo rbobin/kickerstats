@@ -1,9 +1,11 @@
 import grails.test.spock.IntegrationSpec
+import spock.lang.Ignore
 
 class StatisticsServiceSpec extends IntegrationSpec {
 
     def statisticsService
 
+    @Ignore
     def 'test getTopWins'() {
         when:
         def teams = statisticsService.getTopWins()
@@ -13,6 +15,13 @@ class StatisticsServiceSpec extends IntegrationSpec {
         teams[0].wins == 2
         teams[1].wins == 1
 
+    }
+
+    def 'test getTopRate'() {
+        when:
+        def teams = statisticsService.getTopRate()
+        then:
+        println "123"
     }
 
 }
