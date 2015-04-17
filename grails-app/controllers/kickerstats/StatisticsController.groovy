@@ -9,4 +9,10 @@ class StatisticsController {
             statisticsService.getTopWins(params.max)
         }
     }
+
+    def topAvg() {
+        render(contentType: 'application/json') {
+            statisticsService.getTopAvg(params.max)
+        }
+    }
 }

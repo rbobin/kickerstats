@@ -19,7 +19,7 @@ class BootStrap {
 
         def game1 = new Game(challenge: challenge, winner: team1, loser: team2, loserScore: 5).save(failOnError: true, validate: true)
         def game2 = new Game(challenge: challenge, winner: team2, loser: team1, loserScore: 3).save(failOnError: true, validate: true)
-        def game3 = new Game(challenge: challenge, winner: team1, loser: team2, loserScore: 4).save(failOnError: true, validate: true)
+        def game3 = new Game(challenge: challenge, winner: team1, loser: team2, loserScore: 2).save(failOnError: true, validate: true)
     }
 
     def destroy = {
