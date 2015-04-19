@@ -1,6 +1,7 @@
 package kickerstats
 
 import grails.transaction.Transactional
+import org.hibernate.criterion.CriteriaSpecification
 
 import java.math.MathContext
 
@@ -10,18 +11,87 @@ class StatisticsService {
     final def DEFAULT_MAX_RESULTS = "10"
 
     def getTopWins(maxResults) {
-        def result = []
-        def teams = Game.executeQuery("Select g.winner, count(g.winner) from Game g group by g.winner order by count(g.winner) desc ", [max: maxResults ?: DEFAULT_MAX_RESULTS])
-        teams.each {
-            result << [team: it[0], wins: it[1]]
+        def result = Game.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
+            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            projections {
+                property("winner", "team")
+                groupProperty "winner"
+                rowCount "wins"
+                order("wins", "desc")
+            }
         }
         return result
     }
 
-    def getTopAvg(maxResults) {
+    def getTopAverageScore(maxResults) {
         def result = []
-        def winners = Game.executeQuery("Select g.winner, count(g.winner), sum(g.winnerScore) from Game g group by g.winner order by count(g.winnerScore) desc ")
-        def losers = Game.executeQuery("Select g.loser, count(g.loser), sum(g.loserScore) from Game g group by g.loser order by count(g.loserScore) desc ")
+        def winners = Game.createCriteria().list {
+            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            projections {
+                property("winner", "team")
+                groupProperty "winner"
+                sum("winnerScore", "score")
+                rowCount "wins"
+            }
+        }
+
+        def losers = Game.createCriteria().list {
+            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            projections {
+                property("loser", "team")
+                groupProperty "loser"
+                sum("loserScore", "score")
+                rowCount "losses"
+            }
+        }
+
+        def games = [:]
+        winners.each {
+            games[it.team] = [games: it.wins, score: it.score]
+        }
+
+
+
+        losers.each {
+            def a = games[it.team]
+            if(!a) {
+                games[it.team] = [games: it.losses, score: it.score]
+            } else {
+                games[it.team] = [games: a.games + it.losses, score: a.score + it.score]
+            }
+        }
+
+        games.each {team, stats ->
+            def avg = stats.score / stats.games
+            avg = avg.round(new MathContext(3))
+            result << [team: team, avg: avg]
+        }
+
+        result.sort {a, b ->
+            - (a.avg <=> b.avg)
+        }
+        return result
+    }
+
+    def getTopRate(maxResults) {
+        def result = []
+        def winners = Game.createCriteria().list {
+            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            projections {
+                property("winner", "team")
+                groupProperty "winner"
+                rowCount "wins"
+            }
+        }
+
+        def losers = Game.createCriteria().list {
+            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            projections {
+                property("winner", "team")
+                groupProperty "winner"
+                rowCount "wins"
+            }
+        }
 
         def winnersMap = [:]
         winners.each { team ->
@@ -33,24 +103,6 @@ class StatisticsService {
             losersMap[team.first().id] = team
         }
 
-        winnersMap.each { key, value ->
-            if (!losersMap.containsKey(key))
-                return
-            def avg = (value[2] + losersMap[key][2]) / (value[1] + losersMap[key][1])
-            avg = avg.round(new MathContext(3))
-
-            result << [team: value[0], rate: avg]
-
-        }
-        result.sort {a, b ->
-            - (a.rate <=> b.rate)
-        }
-        return result
-    }
-
-    def getWinRate(maxResults) {
-        def result = []
-        def teams = Game.executeQuery("Select g.winner, count(g.winner) from Game g group by g.winner order by count(g.winner) desc ", [max: maxResults ?: DEFAULT_MAX_RESULTS])
 
     }
 }

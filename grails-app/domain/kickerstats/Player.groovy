@@ -1,6 +1,6 @@
 package kickerstats
 
-class Player {
+class Player implements Serializable {
 
     String firstname, lastname, nickname
 

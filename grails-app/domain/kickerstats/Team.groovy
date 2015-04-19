@@ -1,6 +1,6 @@
 package kickerstats
 
-class Team {
+class Team implements Serializable {
 
     Player defence, offence
     String title

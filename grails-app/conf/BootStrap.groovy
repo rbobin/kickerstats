@@ -5,7 +5,11 @@ import kickerstats.Team
 
 class BootStrap {
 
+    def converterBean
+
     def init = { servletContext ->
+
+        converterBean.init()
 
         def player1 = new Player(firstname: "Firstname1", lastname: "Lastname1").save(failOnError: true, validate: true)
         def player2 = new Player(firstname: "Firstname2", lastname: "Lastname2").save(failOnError: true, validate: true)
