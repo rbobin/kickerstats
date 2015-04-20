@@ -4,6 +4,7 @@ class UrlMappings {
 
         "/topwins"(controller: "statistics", action: "topWins", parseRequest: true)
         "/topavg"(controller: "statistics", action: "topAvg", parseRequest: true)
+        "/toprate"(controller: "statistics", action: "topRate", parseRequest: true)
 
         "/$controller/$action?/$id?(.$format)?"{
             constraints {

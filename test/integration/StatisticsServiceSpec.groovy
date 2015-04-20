@@ -19,7 +19,7 @@ class StatisticsServiceSpec extends IntegrationSpec {
 
     def 'test getTopAvg'() {
         when:
-        def teams = statisticsService.getTopAverageScore(10)
+        def teams = statisticsService.getTopAverage(10)
         then:
         teams
     }

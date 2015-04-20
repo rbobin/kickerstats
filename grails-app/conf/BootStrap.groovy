@@ -1,6 +1,7 @@
 import kickerstats.Challenge
 import kickerstats.Game
 import kickerstats.Player
+import kickerstats.Score
 import kickerstats.Team
 
 class BootStrap {
@@ -21,9 +22,16 @@ class BootStrap {
 
         def challenge = new Challenge().save(failOnError: true, validate: true)
 
-        def game1 = new Game(challenge: challenge, winner: team1, loser: team2, loserScore: 5).save(failOnError: true, validate: true)
-        def game2 = new Game(challenge: challenge, winner: team2, loser: team1, loserScore: 3).save(failOnError: true, validate: true)
-        def game3 = new Game(challenge: challenge, winner: team1, loser: team2, loserScore: 2).save(failOnError: true, validate: true)
+        def game1 = new Game(challenge: challenge).save(failOnError: true, validate: true)
+        def game2 = new Game(challenge: challenge).save(failOnError: true, validate: true)
+        def game3 = new Game(challenge: challenge).save(failOnError: true, validate: true)
+
+        def score1 = new Score(game: game1, team: team1, score: 6).save(failOnError: true, validate: true)
+        def score2 = new Score(game: game1, team: team2, score: 5).save(failOnError: true, validate: true)
+        def score3 = new Score(game: game2, team: team1, score: 3).save(failOnError: true, validate: true)
+        def score4 = new Score(game: game2, team: team2, score: 6).save(failOnError: true, validate: true)
+        def score5 = new Score(game: game3, team: team1, score: 6).save(failOnError: true, validate: true)
+        def score6 = new Score(game: game3, team: team2, score: 2).save(failOnError: true, validate: true)
     }
 
     def destroy = {

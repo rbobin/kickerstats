@@ -12,7 +12,13 @@ class StatisticsController {
 
     def topAvg() {
         render(contentType: 'application/json') {
-            statisticsService.getTopAverageScore(params.max)
+            statisticsService.getTopAverage(params.max)
+        }
+    }
+
+    def topRate() {
+        render(contentType: 'application/json') {
+            statisticsService.getTopRate(params.max)
         }
     }
 }
