@@ -4,21 +4,33 @@ class StatisticsController {
 
     def statisticsService
 
-    def topWins() {
+    def topwins() {
         render(contentType: 'application/json') {
             statisticsService.getTopWins(params.max)
         }
     }
 
-    def topAvg() {
+    def topavg() {
         render(contentType: 'application/json') {
             statisticsService.getTopAverage(params.max)
         }
     }
 
-    def topRate() {
+    def toprate() {
         render(contentType: 'application/json') {
             statisticsService.getTopRate(params.max)
+        }
+    }
+
+    def topcrawlrate() {
+        render(contentType: 'application/json') {
+            statisticsService.getTopCrawlRate(params.max)
+        }
+    }
+
+    def lastcrawlers() {
+        render(contentType: 'application/json') {
+            statisticsService.getLastCrawlers(params.max)
         }
     }
 }
