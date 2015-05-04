@@ -8,11 +8,11 @@ class StatisticsService {
 
     final def DEFAULT_MAX_RESULTS = "10"
 
-    def getTopWins(maxResults) {
+    def getTopTeamTotalWins(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
+            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
             gt("wins", 3)
             eq("score", Score.MAX_SCORE)
-            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
             projections {
                 property("team", "team")
                 groupProperty "team"
@@ -22,7 +22,7 @@ class StatisticsService {
         }
     }
 
-    def getTopAverage(maxResults) {
+    def getTopTeamAverageScore(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
             resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
             projections {
@@ -34,15 +34,15 @@ class StatisticsService {
         }
     }
 
-    def getTopRate(maxResults) {
-         Score.executeQuery("""select new map (s.team as team,
+    def getTopTeamWinRate(maxResults) {
+        Score.executeQuery("""select new map (s.team as team,
                                                (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)
                                from Score s
                                group by s.team
                                order by rate desc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
-    def getTopCrawlRate(maxResults) {
+    def getTopTeamCrawlRate(maxResults) {
         Score.executeQuery("""select new map (s.team as team,
                                               (count(case s.score when 0 then 1 else null end) * 1000) / count(*) as crawlRate)
                               from Score s
@@ -50,7 +50,7 @@ class StatisticsService {
                               order by crawlRate desc""", [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
-    def getLastCrawlers(maxResults) {
+    def getRecentCrawledTeams(maxResults) {
         Challenge.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
             resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
             createAlias("games", "g")
@@ -62,6 +62,22 @@ class StatisticsService {
             }
             eq("s.score", 0)
             order("s.id", "desc")
+        }
+    }
+
+    def getTopPlayerTotalWins(maxResults) {
+        Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
+            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            gt("wins", 3)
+            eq("score", Score.MAX_SCORE)
+            createAlias("team", "t")
+            createAlias("t.player")
+            projections {
+                property("team", "team")
+                groupProperty "team"
+                rowCount "wins"
+                order("wins", "desc")
+            }
         }
     }
 }

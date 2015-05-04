@@ -8,7 +8,7 @@ class StatisticsServiceSpec extends IntegrationSpec {
     @Ignore
     def 'test getTopWins'() {
         when:
-        def teams = statisticsService.getTopWins(10)
+        def teams = statisticsService.getTeamTopWins(10)
         then:
         teams[0].team.title == "title1"
         teams[1].team.title == "title2"
@@ -19,14 +19,14 @@ class StatisticsServiceSpec extends IntegrationSpec {
 
     def 'test getTopAvg'() {
         when:
-        def teams = statisticsService.getTopAverage(10)
+        def teams = statisticsService.getTopTeamAverageScore(10)
         then:
         teams
     }
 
     def 'test getTopRate'() {
         when:
-        def teams = statisticsService.getTopRate(10)
+        def teams = statisticsService.getTopTeamWinRate(10)
         then:
         teams
     }
