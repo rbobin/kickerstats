@@ -1,7 +1,7 @@
 package kickerstats
 
 import grails.transaction.Transactional
-import org.hibernate.criterion.CriteriaSpecification
+import static org.hibernate.criterion.CriteriaSpecification.*
 
 @Transactional
 class StatisticsService {
@@ -10,8 +10,7 @@ class StatisticsService {
 
     def getTopTeamTotalWins(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
-            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
-            gt("wins", 3)
+            resultTransformer(ALIAS_TO_ENTITY_MAP)
             eq("score", Score.MAX_SCORE)
             projections {
                 property("team", "team")
@@ -24,7 +23,7 @@ class StatisticsService {
 
     def getTopTeamAverageScore(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
-            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            resultTransformer(ALIAS_TO_ENTITY_MAP)
             projections {
                 property("team", "team")
                 groupProperty "team"
@@ -52,7 +51,7 @@ class StatisticsService {
 
     def getRecentCrawledTeams(maxResults) {
         Challenge.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
-            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
+            resultTransformer(ALIAS_TO_ENTITY_MAP)
             createAlias("games", "g")
             createAlias("g.scores", "s")
             projections {
@@ -65,16 +64,28 @@ class StatisticsService {
         }
     }
 
-    def getTopPlayerTotalWins(maxResults) {
+    def getTopPlayerDefenceTotalWins(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
-            resultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP)
-            gt("wins", 3)
+            resultTransformer(ALIAS_TO_ENTITY_MAP)
             eq("score", Score.MAX_SCORE)
             createAlias("team", "t")
-            createAlias("t.player")
             projections {
-                property("team", "team")
-                groupProperty "team"
+                property("t.defence", "player")
+                groupProperty "t.defence"
+                rowCount "wins"
+                order("wins", "desc")
+            }
+        }
+    }
+
+    def getTopPlayerOffenceTotalWins(maxResults) {
+        Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
+            resultTransformer(ALIAS_TO_ENTITY_MAP)
+            eq("score", Score.MAX_SCORE)
+            createAlias("team", "t")
+            projections {
+                property("t.offence", "player")
+                groupProperty "t.offence"
                 rowCount "wins"
                 order("wins", "desc")
             }

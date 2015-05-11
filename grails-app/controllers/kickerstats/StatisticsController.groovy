@@ -4,33 +4,43 @@ class StatisticsController {
 
     def statisticsService
 
-    def topwins() {
+    def topTeamWin() {
         render(contentType: 'application/json') {
-            statisticsService.getTeamTopWins(params.max)
+            statisticsService.getTopTeamTotalWins(params.max)
         }
     }
 
-    def topavg() {
+    def topTeamAvg() {
         render(contentType: 'application/json') {
             statisticsService.getTopTeamAverageScore(params.max)
         }
     }
 
-    def toprate() {
+    def topTeamRate() {
         render(contentType: 'application/json') {
             statisticsService.getTopTeamWinRate(params.max)
         }
     }
 
-    def topcrawlrate() {
+    def topTeamCrawlRate() {
         render(contentType: 'application/json') {
             statisticsService.getTopTeamCrawlRate(params.max)
         }
     }
 
-    def lastcrawlers() {
+    def lastTeamCrawlers() {
         render(contentType: 'application/json') {
             statisticsService.getRecentCrawledTeams(params.max)
         }
     }
-}
+
+    def topDefenseWin() {
+        render(contentType: 'application/json') {
+            statisticsService.getTopPlayerDefenceTotalWins(params.max)
+        }
+    }
+
+    def topOffenceWin() {
+        render()
+    }
+ }
