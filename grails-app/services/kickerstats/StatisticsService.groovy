@@ -35,15 +35,15 @@ class StatisticsService {
 
     def getTopTeamWinRate(maxResults) {
         Score.executeQuery("""select new map (s.team as team,
-                                               (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)
-                               from Score s
-                               group by s.team
-                               order by rate desc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
+                                  (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)
+                              from Score s
+                              group by s.team
+                              order by rate desc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
     def getTopTeamCrawlRate(maxResults) {
         Score.executeQuery("""select new map (s.team as team,
-                                              (count(case s.score when 0 then 1 else null end) * 1000) / count(*) as crawlRate)
+                                  (count(case s.score when 0 then 1 else null end) * 1000) / count(*) as crawlRate)
                               from Score s
                               group by s.team
                               order by crawlRate desc""", [max: maxResults ?: DEFAULT_MAX_RESULTS])
@@ -64,7 +64,7 @@ class StatisticsService {
         }
     }
 
-    def getTopPlayerDefenceTotalWins(maxResults) {
+    def getTopPlayerDefenceWins(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
             resultTransformer(ALIAS_TO_ENTITY_MAP)
             eq("score", Score.MAX_SCORE)
@@ -78,7 +78,7 @@ class StatisticsService {
         }
     }
 
-    def getTopPlayerOffenceTotalWins(maxResults) {
+    def getTopPlayerOffenceWins(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
             resultTransformer(ALIAS_TO_ENTITY_MAP)
             eq("score", Score.MAX_SCORE)
@@ -90,5 +90,15 @@ class StatisticsService {
                 order("wins", "desc")
             }
         }
+    }
+
+    def getTopPlayerTotalWins(maxResults) {
+        Score.executeQuery("""select new map (p as player,
+                                  count(p) as wins)
+                              from Score s, Player p
+                              where (s.team.defence = p or s.team.offence = p)
+                                  and s.score = 6
+                              group by p
+                              order by wins desc""", [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 }

@@ -36,11 +36,19 @@ class StatisticsController {
 
     def topDefenseWin() {
         render(contentType: 'application/json') {
-            statisticsService.getTopPlayerDefenceTotalWins(params.max)
+            statisticsService.getTopPlayerDefenceWins(params.max)
         }
     }
 
     def topOffenceWin() {
-        render()
+        render(contentType: 'application/json') {
+            statisticsService.getTopPlayerOffenceWins(params.max)
+        }
+    }
+
+    def topTotalWins() {
+        render(contentType: 'application/json') {
+            statisticsService.getTopPlayerTotalWins(params.max)
+        }
     }
  }
