@@ -106,7 +106,16 @@ class StatisticsService {
         Score.executeQuery("""select new map (p as player,
                                   (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)
                               from Score s, Player p
-                              where (s.team.defence = p or s.team.offence = p)
+                              where (s.team.defence = p)
+                              group by p
+                              order by rate desc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
+    }
+
+    def getTopPlayerOffenceWinRate(maxResults) {
+        Score.executeQuery("""select new map (p as player,
+                                  (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)
+                              from Score s, Player p
+                              where (s.team.offence = p)
                               group by p
                               order by rate desc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
