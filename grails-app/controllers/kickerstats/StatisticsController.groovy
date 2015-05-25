@@ -63,4 +63,10 @@ class StatisticsController {
             statisticsService.getTopPlayerOffenceWinRate(params.max)
         }
     }
+
+    def topPlayerTotalRate() {
+        render(contentType: 'application/json') {
+            statisticsService.getTopPlayerTotalWinRate(params.max)
+        }
+    }
  }
