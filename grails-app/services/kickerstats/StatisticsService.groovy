@@ -22,7 +22,7 @@ class StatisticsService {
     }
 
     def getTopTeamAverageScore(maxResults) {
-        Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
+        def result = Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
             resultTransformer(ALIAS_TO_ENTITY_MAP)
             projections {
                 property("team", "team")
@@ -31,6 +31,11 @@ class StatisticsService {
                 order("avg", "desc")
             }
         }
+        result.collect()
+        result.each {
+            it.avg = it.avg.round(2)
+        }
+        return result
     }
 
     def getTopTeamWinRate(maxResults) {
@@ -43,7 +48,7 @@ class StatisticsService {
 
     def getTopTeamCrawlRate(maxResults) {
         Score.executeQuery("""select new map (s.team as team,
-                                  (count(case s.score when 0 then 1 else null end) * 1000) / count(*) as crawlRate)
+                                  (count(case s.score when 0 then 1 else null end) * 100) / count(*) as crawlRate)
                               from Score s
                               group by s.team
                               order by crawlRate desc""", [max: maxResults ?: DEFAULT_MAX_RESULTS])
