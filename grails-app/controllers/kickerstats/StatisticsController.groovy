@@ -10,13 +10,13 @@ class StatisticsController {
         }
     }
 
-    def topTeamAvg() {
+    def topTeamAvgScore() {
         render(contentType: 'application/json') {
             statisticsService.getTopTeamAverageScore(params.max)
         }
     }
 
-    def topTeamRate() {
+    def topTeamWinRate() {
         render(contentType: 'application/json') {
             statisticsService.getTopTeamWinRate(params.max)
         }
@@ -28,7 +28,7 @@ class StatisticsController {
         }
     }
 
-    def lastTeamCrawlers() {
+    def lastCrawledTeams() {
         render(contentType: 'application/json') {
             statisticsService.getRecentCrawledTeams(params.max)
         }
@@ -64,9 +64,9 @@ class StatisticsController {
         }
     }
 
-    def topPlayerTotalRate() {
+    def topTotalRate() {
         render(contentType: 'application/json') {
             statisticsService.getTopPlayerTotalWinRate(params.max)
         }
     }
- }
+}

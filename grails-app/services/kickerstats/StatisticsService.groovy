@@ -17,6 +17,7 @@ class StatisticsService {
                 groupProperty "team"
                 rowCount "wins"
                 order("wins", "desc")
+                order("team", "asc")
             }
         }
     }
@@ -29,6 +30,7 @@ class StatisticsService {
                 groupProperty "team"
                 avg("score", "avg")
                 order("avg", "desc")
+                order("team", "asc")
             }
         }
         result.collect()
@@ -43,7 +45,7 @@ class StatisticsService {
                                   (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)
                               from Score s
                               group by s.team
-                              order by rate desc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
+                              order by rate desc, team asc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
     def getTopTeamCrawlRate(maxResults) {
@@ -51,7 +53,7 @@ class StatisticsService {
                                   (count(case s.score when 0 then 1 else null end) * 100) / count(*) as crawlRate)
                               from Score s
                               group by s.team
-                              order by crawlRate desc""", [max: maxResults ?: DEFAULT_MAX_RESULTS])
+                              order by crawlRate desc, team asc""", [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
     def getRecentCrawledTeams(maxResults) {
@@ -66,6 +68,7 @@ class StatisticsService {
             }
             eq("s.score", 0)
             order("s.id", "desc")
+            order("team", "asc")
         }
     }
 
@@ -79,6 +82,7 @@ class StatisticsService {
                 groupProperty "t.defence"
                 rowCount "wins"
                 order("wins", "desc")
+                order("player", "asc")
             }
         }
     }
@@ -93,6 +97,7 @@ class StatisticsService {
                 groupProperty "t.offence"
                 rowCount "wins"
                 order("wins", "desc")
+                order("player", "asc")
             }
         }
     }
@@ -104,7 +109,7 @@ class StatisticsService {
                               where (s.team.defence = p or s.team.offence = p)
                                   and s.score = 6
                               group by p
-                              order by wins desc""", [max: maxResults ?: DEFAULT_MAX_RESULTS])
+                              order by wins desc, player asc""", [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
     def getTopPlayerDefenceWinRate(maxResults) {
@@ -113,7 +118,7 @@ class StatisticsService {
                               from Score s, Player p
                               where (s.team.defence = p)
                               group by p
-                              order by rate desc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
+                              order by rate desc, player asc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
     def getTopPlayerOffenceWinRate(maxResults) {
@@ -122,7 +127,7 @@ class StatisticsService {
                               from Score s, Player p
                               where (s.team.offence = p)
                               group by p
-                              order by rate desc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
+                              order by rate desc, player asc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
     def getTopPlayerTotalWinRate(maxResults) {
@@ -131,6 +136,6 @@ class StatisticsService {
                               from Score s, Player p
                               where (s.team.defence = p or s.team.offence = p)
                                group by p
-                              order by rate desc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
+                              order by rate desc, player asc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 }
