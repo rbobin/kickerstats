@@ -1,6 +1,6 @@
 package kickerstats
 
-class Challenge implements Serializable{
+class Challenge implements Serializable {
 
     Date dateCreated
     Boolean finished = false
@@ -8,9 +8,9 @@ class Challenge implements Serializable{
     static hasMany = [games: Game]
 
     static constraints = {
-        finished(validator: {val, obj ->
-            if (val)
-                games.size() > 0
+        finished(nullable: false, validator: { finished, obj, errors ->
+            if (finished && !games)
+                errors.reject("challenge.finished.emptychallenge")
         })
     }
 }
