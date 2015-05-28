@@ -16,7 +16,7 @@ class Score implements Serializable {
         score(nullable: false, validator: { score, object, errors ->
             if (score > MAX_SCORE)
                 errors.rejectValue("score", "score.score.highlimit")
-            else if (score < 0)
+            else if (score.intValue() < 0)
                 errors.rejectValue("score", "score.score.lowlimit")
         })
     }
