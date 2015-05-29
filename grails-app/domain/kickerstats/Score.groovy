@@ -11,7 +11,7 @@ class Score implements Serializable {
     static MAX_SCORE = 6
 
     static constraints = {
-        game nullable: false
+        game nullable: true
         team nullable: false
         score(nullable: false, validator: { score, object, errors ->
             if (score > MAX_SCORE)

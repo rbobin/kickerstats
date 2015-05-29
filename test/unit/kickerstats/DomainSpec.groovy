@@ -21,11 +21,14 @@ class DomainSpec extends Specification {
 
     def getGame() {
         Game game = new Game()
-        game.scores = [getScore(3), getScore(6)] as Set
+        game.addToScores(getScore(3))
+        game.addToScores(getScore(6))
         return game
     }
 
     def getChallenge() {
-        new Challenge(games: [game])
+        Challenge challenge = new Challenge()
+        challenge.addToGames(game)
+        return challenge
     }
 }
