@@ -2,26 +2,26 @@ package kickerstats
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
+import spock.lang.Specification
 
 @TestFor(Game)
 @Mock([Challenge, Game, Score, Team, Player])
-class GameSpec extends DomainSpec {
+class GameSpec extends Specification {
 
-    def "test score constraint"() {
+    def "test Game constraints"() {
         given:
-        Challenge challenge = challenge.save()
-        Game game = challenge.games.first()
+        mockForConstraintsTests(Game)
+        Game game = new Game(challenge: new Challenge())
 
         when: "game has no associated scores"
-        game.scores = [] as Set
         then: "game is not valid"
         !game.validate()
         game.hasErrors()
         1 == game.errors.errorCount
-        game.errors.allErrors.first().codes.contains("game.scores.empty")
+        game.errors.allErrors.first().codes.contains("game.scores.nullable")
 
         when: "game has less than two scores"
-        game.addToScores(getScore(6))
+        game.addToScores([score: 1])
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
@@ -30,8 +30,8 @@ class GameSpec extends DomainSpec {
         game.errors.allErrors.first().codes.contains("game.scores.notcomplete")
 
         when: "game has more than two scores"
-        game.addToScores(getScore(4))
-        game.addToScores(getScore(2))
+        game.addToScores([score: 3])
+        game.addToScores([score: 2])
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
@@ -39,17 +39,11 @@ class GameSpec extends DomainSpec {
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.exceed")
 
-        when: "game has exactly two scores"
-        game.scores.clear()
-        game.addToScores(getScore(6))
-        game.addToScores(getScore(0))
-        game.clearErrors()
-        then: "game is valid"
-        game.validate()
-        !game.hasErrors()
-
         when: "game has same team associated with both scores"
-        game.scores*.setTeam(team)
+        game.scores.clear()
+        game.addToScores(new Score())
+        game.addToScores(new Score())
+        game.scores*.setTeam(new Team())
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
@@ -57,14 +51,8 @@ class GameSpec extends DomainSpec {
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.team.sameteam")
 
-        when: "game has different teams associated with both scores"
-        game.scores.first().setTeam(team)
-        game.clearErrors()
-        then: "game is valid"
-        game.validate()
-        !game.hasErrors()
-
         when: "game scores are both maximum"
+        game.scores.first().setTeam(new Team())
         game.scores*.setScore(Score.MAX_SCORE)
         game.clearErrors()
         then: "game is not valid"
@@ -82,15 +70,10 @@ class GameSpec extends DomainSpec {
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.score.nomaxscore")
 
-        when: "game scores are different and at least one is maximum score"
-        game.scores.first().setScore(6)
-        game.clearErrors()
-        then: "game is valid"
-        game.validate()
-        !game.hasErrors()
-
         when: "game has the same player performing in both teams"
-        game.scores*.team*.setOffence(player)
+        game.scores.first().setScore(Score.MAX_SCORE)
+        game.scores*.team*.each { team -> team.setDefence(new Player()) }
+        game.scores*.team*.setOffence(new Player())
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
@@ -99,7 +82,7 @@ class GameSpec extends DomainSpec {
         game.errors.allErrors.first().codes.contains("game.scores.team.player.playerintersection")
 
         when: "game has no players performing in both teams"
-        game.scores*.team*.each { team -> team.setOffence(player) }
+        game.scores*.team*.each { team -> team.setOffence(new Player()) }
         game.clearErrors()
         then: "game is valid"
         game.validate()

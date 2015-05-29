@@ -10,9 +10,7 @@ class Game implements Serializable {
     static constraints = {
         scores(nullable: false, validator: {scores, object, errors ->
             List<Score> scoresList = scores.toList()
-            if (!scores)
-                errors.reject("game.scores.empty")
-            else if (scores.size() < 2)
+            if (scores.size() < 2)
                 errors.reject("game.scores.notcomplete")
             else if (scores.size() > 2)
                 errors.reject("game.scores.exceed")

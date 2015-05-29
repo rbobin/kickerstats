@@ -2,18 +2,19 @@ package kickerstats
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
+import spock.lang.Specification
 
 @TestFor(Challenge)
 @Mock([Challenge, Game, Score, Team, Player])
-class ChallengeSpec extends DomainSpec {
+class ChallengeSpec extends Specification {
 
-    def "test finished constraint"() {
+    def "test Challenge constraints"() {
         given:
-        Challenge challenge = challenge.save()
+        mockForConstraintsTests(Challenge)
+        Challenge challenge = new Challenge()
 
         when: "challenge is finished and has no games associated"
         challenge.setFinished(true)
-        challenge.games.clear()
         then: "challenge is not valid"
         !challenge.validate()
         challenge.hasErrors()
@@ -21,7 +22,7 @@ class ChallengeSpec extends DomainSpec {
         challenge.errors.allErrors.first().codes.contains("challenge.finished.emptychallenge")
 
         when: "challenge is finished and has at least one game associated"
-        challenge.addToGames(game)
+        challenge.addToGames(new Game())
         challenge.clearErrors()
         then: "challenge is valid"
         challenge.validate()

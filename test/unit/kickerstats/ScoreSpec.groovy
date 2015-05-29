@@ -2,29 +2,22 @@ package kickerstats
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
+import spock.lang.Specification
 
 @TestFor(Score)
-@Mock([Challenge, Game, Score, Team, Player])
-class ScoreSpec extends DomainSpec {
+@Mock([Game, Score, Team])
+class ScoreSpec extends Specification {
 
-    def "test game constraint"() {
+    def "test Score constraints"() {
         given:
-        Challenge challenge = challenge.save()
-        Score score = challenge.games.first().scores.first()
+        mockForConstraintsTests(Score)
+        Score score = new Score(team: new Team(), score: 0)
 
         when: "score is not associated with any game"
         score.setGame(null)
         then: "score is valid"
-        score.validate()
-        !score.hasErrors()
-    }
 
-    def "test team constraint"() {
-        given:
-        Challenge challenge = challenge.save()
-        Score score = challenge.games.first().scores.first()
-
-        when: "score has no associated team"
+        when: "score has no team"
         score.setTeam(null)
         then: "score is not valid"
         !score.validate()
@@ -32,20 +25,8 @@ class ScoreSpec extends DomainSpec {
         1 == score.errors.errorCount
         score.errors.allErrors.first().codes.contains("score.team.nullable")
 
-        when: "score has associated team"
-        score.setTeam(team)
-        score.clearErrors()
-        then: "score is valid"
-        score.validate()
-        !score.hasErrors()
-    }
-
-    def "test score constraint"() {
-        given:
-        Challenge challenge = challenge.save()
-        Score score = challenge.games.first().scores.first()
-
         when: "score has no score"
+        score.setTeam(new Team())
         score.setScore(null)
         then: "score is not valid"
         !score.validate()
