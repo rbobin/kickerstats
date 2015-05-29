@@ -13,11 +13,6 @@ class Score implements Serializable {
     static constraints = {
         game nullable: true
         team nullable: false
-        score(nullable: false, validator: { score, object, errors ->
-            if (score > MAX_SCORE)
-                errors.rejectValue("score", "score.score.highlimit")
-            else if (score.intValue() < 0)
-                errors.rejectValue("score", "score.score.lowlimit")
-        })
+        score(nullable: false, min: 0, max: MAX_SCORE)
     }
 }
