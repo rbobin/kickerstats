@@ -6,10 +6,11 @@ class Team implements Serializable {
     String title
 
     static constraints = {
-        defence(nullable: false, validator: { val, obj ->
-            val != obj.offence
+        title(nullable: true, blank: false, maxSize: 20)
+        defence(nullable: false)
+        offence(nullable: false, unique: "defence", validator: { offence, object, errors ->
+            if (offence == object.defence)
+                errors.reject("team.offence.sameplayer")
         })
-        offence(nullable: false, unique: ['defence'])
-        title(nullable: true, blank: false)
     }
 }
