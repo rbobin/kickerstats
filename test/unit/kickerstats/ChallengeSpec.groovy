@@ -1,46 +1,38 @@
 package kickerstats
 
+import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 
 @TestFor(Challenge)
+@Mock([Challenge, Game, Score, Team, Player])
 class ChallengeSpec extends DomainSpec {
 
-    def "test saving not finished empty challenge"() {
+    def "test finished constraint"() {
         given:
-        Challenge challenge = new Challenge(finished: false)
-        expect:
-        challenge.validate()
-        !challenge.hasErrors()
-        0 == challenge.errors.errorCount
-    }
+        Challenge challenge = challenge.save()
 
-    def "test saving finished empty challenge"() {
-        given:
-        Challenge challenge = new Challenge(finished: true)
-        expect:
+        when: "challenge is finished and has no games associated"
+        challenge.setFinished(true)
+        challenge.games.clear()
+        then: "challenge is not valid"
         !challenge.validate()
         challenge.hasErrors()
         1 == challenge.errors.errorCount
         challenge.errors.allErrors.first().codes.contains("challenge.finished.emptychallenge")
-    }
 
-    def "test saving not finished non-empty challenge"() {
-        given:
-        Challenge challenge = challenge
+        when: "challenge is finished and has at least one game associated"
+        challenge.addToGames(game)
+        challenge.clearErrors()
+        then: "challenge is valid"
+        challenge.validate()
+        !challenge.hasErrors()
+
+        when: "challenge is not finished and has no games associated"
         challenge.setFinished(false)
-        expect:
+        challenge.games.clear()
+        challenge.clearErrors()
+        then: "challenge is valid"
         challenge.validate()
         !challenge.hasErrors()
-        0 == challenge.errors.errorCount
-    }
-
-    def "test saving finished non-empty challenge"() {
-        given:
-        Challenge challenge = challenge
-        challenge.setFinished(true)
-        expect:
-        challenge.validate()
-        !challenge.hasErrors()
-        0 == challenge.errors.errorCount
     }
 }

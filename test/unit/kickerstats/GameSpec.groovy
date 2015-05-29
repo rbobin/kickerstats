@@ -12,10 +12,11 @@ class GameSpec extends DomainSpec {
         Challenge challenge = challenge.save()
         Game game = challenge.games.first()
 
-        when: "a game has no associated scores"
+        when: "game has no associated scores"
         game.scores = [] as Set
         then: "game is not valid"
         !game.validate()
+        game.hasErrors()
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.empty")
 
@@ -24,6 +25,7 @@ class GameSpec extends DomainSpec {
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
+        game.hasErrors()
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.notcomplete")
 
@@ -33,6 +35,7 @@ class GameSpec extends DomainSpec {
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
+        game.hasErrors()
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.exceed")
 
@@ -43,13 +46,14 @@ class GameSpec extends DomainSpec {
         game.clearErrors()
         then: "game is valid"
         game.validate()
-        0 == game.errors.errorCount
+        !game.hasErrors()
 
         when: "game has same team associated with both scores"
         game.scores*.setTeam(team)
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
+        game.hasErrors()
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.team.sameteam")
 
@@ -58,13 +62,14 @@ class GameSpec extends DomainSpec {
         game.clearErrors()
         then: "game is valid"
         game.validate()
-        0 == game.errors.errorCount
+        !game.hasErrors()
 
         when: "game scores are both maximum"
         game.scores*.setScore(Score.MAX_SCORE)
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
+        game.hasErrors()
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.score.twomaxscores")
 
@@ -73,6 +78,7 @@ class GameSpec extends DomainSpec {
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
+        game.hasErrors()
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.score.nomaxscore")
 
@@ -81,21 +87,22 @@ class GameSpec extends DomainSpec {
         game.clearErrors()
         then: "game is valid"
         game.validate()
-        0 == game.errors.errorCount
+        !game.hasErrors()
 
         when: "game has the same player performing in both teams"
         game.scores*.team*.setOffence(player)
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
+        game.hasErrors()
         1 == game.errors.errorCount
         game.errors.allErrors.first().codes.contains("game.scores.team.player.playerintersection")
 
         when: "game has no players performing in both teams"
-        game.scores*.team*.each { team -> team.setOffence(player)}
+        game.scores*.team*.each { team -> team.setOffence(player) }
         game.clearErrors()
         then: "game is valid"
         game.validate()
-        0 == game.errors.errorCount
+        !game.hasErrors()
     }
 }
