@@ -48,6 +48,7 @@ class ChallengeServiceSpec extends Specification {
         service.finishChallenge challenge.id
         then:
         def e = thrown ServiceException
+        1 == e.errors.size()
         e.errors.first().codes.contains "challenge.finished.emptychallenge"
 
         when:

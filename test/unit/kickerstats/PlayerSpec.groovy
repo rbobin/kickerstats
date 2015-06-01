@@ -8,7 +8,7 @@ class PlayerSpec extends Specification {
 
     void "test Player constraints"() {
         given:
-        Player existingPlayer = new Player(nickname: "Nickname")
+        Player existingPlayer = new Player(firstname: "First Name1", lastname: "Last Name1", nickname: "Nickname")
         mockForConstraintsTests(Player, [existingPlayer])
         Player player = new Player(firstname: "First Name", lastname: "Last Name")
 
@@ -51,8 +51,18 @@ class PlayerSpec extends Specification {
         player.validate()
         !player.hasErrors()
 
+        when: "player firstname and secondname pair is not unique"
+        player.setFirstname("First Name1")
+        player.setLastname("Last Name1")
+        then: "player is not valid"
+        !player.validate()
+        player.hasErrors()
+        1 == player.errors.errorCount
+        player.errors.allErrors.first().codes.contains("unique.lastname")
+
         when: "player has no first name"
         player.setFirstname(null)
+        player.setLastname("Last Name")
         then: "player is not valid"
         !player.validate()
         player.hasErrors()

@@ -9,6 +9,7 @@ class ChallengeService {
 
     final def FINISHED_NOT_UNIQUE_CODE = "challenge.finished.notunique"
 
+    @Transactional(readOnly = true)
     def getChallenge(long id) {
         Challenge challenge = Challenge.get id
         if (!challenge) {
@@ -32,10 +33,10 @@ class ChallengeService {
         if (!challenge) {
             throw new ObjectNotFoundException(id, "Challenge")
         }
-        challenge.setFinished(true)
+        challenge.setFinished true
         if (!challenge.validate()) {
             throw new ServiceException(errors : challenge.errors.allErrors)
         }
-        challenge.save(flush: true)
+        challenge.save flush: true
     }
 }
