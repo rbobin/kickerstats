@@ -7,7 +7,7 @@ import org.hibernate.ObjectNotFoundException
 class PlayerService {
 
     @Transactional(readOnly = true)
-    def getPlayer(long id) {
+    def getPlayer(Long id) {
         Player player = Player.get id
         if (!player) {
             throw new ObjectNotFoundException(id, "Player")
