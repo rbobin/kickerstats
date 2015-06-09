@@ -23,7 +23,7 @@ class PlayerService {
         player.save flush: true
     }
 
-    def editPlayer(Map params) {
+    def editPlayer(Map params = [:]) {
         def id = params.id as Long
         Player player = Player.get id
         if (!player) {

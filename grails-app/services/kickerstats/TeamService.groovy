@@ -24,7 +24,7 @@ class TeamService {
         team.save flush: true
     }
 
-    def editTeam(Map params) {
+    def editTeam(Map params = [:]) {
         def id = params.id as Long
         Team team = Team.get id
         if (!team) {
