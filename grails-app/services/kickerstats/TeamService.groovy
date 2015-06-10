@@ -15,7 +15,6 @@ class TeamService {
         team
     }
 
-
     def createTeam(Map params) {
         Team team = new Team(params)
         if (!team.validate()) {
