@@ -8,6 +8,7 @@ class StatisticsService {
 
     final def DEFAULT_MAX_RESULTS = "10"
 
+    // TODO Update to count on winnerScore instead of MAX_SCORE
     def getTopTeamTotalWins(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
             resultTransformer(ALIAS_TO_ENTITY_MAP)
@@ -40,6 +41,7 @@ class StatisticsService {
         return result
     }
 
+    // TODO Update to count on winnerScore instead of MAX_SCORE
     def getTopTeamWinRate(maxResults) {
         Score.executeQuery("""select new map (s.team as team,
                                   (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)
@@ -60,7 +62,7 @@ class StatisticsService {
         Challenge.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
             resultTransformer(ALIAS_TO_ENTITY_MAP)
             createAlias("games", "g")
-            createAlias("g.scores", "s")
+            createAlias("g.loserScore", "s")
             projections {
                 property "s.id"
                 property "s.score"
@@ -72,6 +74,7 @@ class StatisticsService {
         }
     }
 
+    // TODO Update to count on winnerScore instead of MAX_SCORE
     def getTopPlayerDefenceWins(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
             resultTransformer(ALIAS_TO_ENTITY_MAP)
@@ -87,6 +90,7 @@ class StatisticsService {
         }
     }
 
+    // TODO Update to count on winnerScore instead of MAX_SCORE
     def getTopPlayerOffenceWins(maxResults) {
         Score.createCriteria().list(max: maxResults ?: DEFAULT_MAX_RESULTS) {
             resultTransformer(ALIAS_TO_ENTITY_MAP)
@@ -112,6 +116,7 @@ class StatisticsService {
                               order by wins desc, player asc""", [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
+    // TODO Update to count on winnerScore instead of MAX_SCORE
     def getTopPlayerDefenceWinRate(maxResults) {
         Score.executeQuery("""select new map (p as player,
                                   (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)
@@ -121,6 +126,7 @@ class StatisticsService {
                               order by rate desc, player asc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
+    // TODO Update to count on winnerScore instead of MAX_SCORE
     def getTopPlayerOffenceWinRate(maxResults) {
         Score.executeQuery("""select new map (p as player,
                                   (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)
@@ -130,6 +136,7 @@ class StatisticsService {
                               order by rate desc, player asc""", [maxScore: Score.MAX_SCORE], [max: maxResults ?: DEFAULT_MAX_RESULTS])
     }
 
+    // TODO Update to count on winnerScore instead of MAX_SCORE
     def getTopPlayerTotalWinRate(maxResults) {
         Score.executeQuery("""select new map (p as player,
                                   (count(case s.score when :maxScore then 1 else null end) * 100) / count(*) as rate)

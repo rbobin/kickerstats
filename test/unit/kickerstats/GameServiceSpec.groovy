@@ -83,8 +83,8 @@ class GameServiceSpec extends Specification {
 
     private static Game getGame(Challenge challenge = new Challenge()) {
         Game game = new Game(challenge: challenge)
-        game.addToScores(team: new Team(offence: new Player(), defence: new Player()), score: 0)
-        game.addToScores(team: new Team(offence: new Player(), defence: new Player()), score: Score.MAX_SCORE)
+        game.setLoserScore(new Score(team: new Team(offence: new Player(), defence: new Player()), score: 0))
+        game.setWinnerScore(new Score(team: new Team(offence: new Player(), defence: new Player()), score: Score.MAX_SCORE))
         game
     }
 }

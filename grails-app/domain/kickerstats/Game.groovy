@@ -3,24 +3,22 @@ package kickerstats
 class Game implements Serializable {
 
     Challenge challenge
+    Score winnerScore
+    Score loserScore
 
     static belongsTo = [challenge: Challenge]
-    static hasMany = [scores: Score]
 
     static constraints = {
-        scores(nullable: false, validator: {scores, object, errors ->
-            List<Score> scoresList = scores.toList()
-            if (scores.size() < 2)
-                errors.reject("game.scores.notcomplete")
-            else if (scores.size() > 2)
-                errors.reject("game.scores.exceed")
-            else if (scoresList[0].team == scoresList[1].team)
-                errors.reject("game.scores.team.sameteam")
-            else if (scoresList[0].score.intValue() == Score.MAX_SCORE && scoresList[1].score.intValue() == Score.MAX_SCORE)
+        winnerScore(nullable: false, validator: { score, object, errors ->
+            if (score.score != Score.MAX_SCORE)
+                errors.reject("game.winnerScore.nomaxscore")
+        })
+        loserScore(nullable: false, validator: { score, object, errors ->
+            if (score.score == Score.MAX_SCORE)
                 errors.reject("game.scores.score.twomaxscores")
-            else if (scoresList[0].score.intValue() != Score.MAX_SCORE && scoresList[1].score.intValue() != Score.MAX_SCORE)
-                errors.reject("game.scores.score.nomaxscore")
-            else if ([scoresList[0].team.defence, scoresList[0].team.offence].intersect([scoresList[1].team.defence, scoresList[1].team.offence]))
+            else if (score.team == object.winnerScore?.team)
+                errors.reject("game.scores.team.sameteam")
+            else if (score.team.getPlayers().intersect(object.winnerScore?.team?.getPlayers() ?: []))
                 errors.reject("game.scores.team.player.playerintersection")
         })
     }

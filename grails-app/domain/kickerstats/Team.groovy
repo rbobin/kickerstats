@@ -13,4 +13,8 @@ class Team implements Serializable {
                 errors.reject("team.offence.sameplayer")
         })
     }
+
+    Collection<Player> getPlayers() {
+        [defence, offence]
+    }
 }

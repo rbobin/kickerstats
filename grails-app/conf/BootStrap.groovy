@@ -33,44 +33,43 @@ class BootStrap {
                           new Challenge(),
                           new Challenge()]
 
+        def scores = [new Score(team: teams[0], score: 6),
+                      new Score(team: teams[1], score: 0),
+                      new Score(team: teams[2], score: 6),
+                      new Score(team: teams[0], score: 3),
+                      new Score(team: teams[4], score: 6),
+                      new Score(team: teams[2], score: 5),
+                      new Score(team: teams[1], score: 6),
+                      new Score(team: teams[2], score: 5),
+                      new Score(team: teams[2], score: 6),
+                      new Score(team: teams[1], score: 0),
+                      new Score(team: teams[1], score: 6),
+                      new Score(team: teams[0], score: 5),
+                      new Score(team: teams[0], score: 6),
+                      new Score(team: teams[1], score: 4),
+                      new Score(team: teams[1], score: 6),
+                      new Score(team: teams[0], score: 1),
+                      new Score(team: teams[2], score: 6),
+                      new Score(team: teams[1], score: 2),
+                      new Score(team: teams[2], score: 6),
+                      new Score(team: teams[4], score: 0)]
 
-        def games = [new Game(challenge: challenges[0]),
-                     new Game(challenge: challenges[0]),
-                     new Game(challenge: challenges[0]),
-                     new Game(challenge: challenges[1]),
-                     new Game(challenge: challenges[1]),
-                     new Game(challenge: challenges[2]),
-                     new Game(challenge: challenges[2]),
-                     new Game(challenge: challenges[2]),
-                     new Game(challenge: challenges[2]),
-                     new Game(challenge: challenges[2])]
-
-        def scores = [new Score(game: games[0], team: teams[0], score: 6),
-                      new Score(game: games[0], team: teams[1], score: 0),
-                      new Score(game: games[1], team: teams[0], score: 3),
-                      new Score(game: games[1], team: teams[2], score: 6),
-                      new Score(game: games[2], team: teams[4], score: 6),
-                      new Score(game: games[2], team: teams[2], score: 5),
-                      new Score(game: games[3], team: teams[1], score: 6),
-                      new Score(game: games[3], team: teams[2], score: 5),
-                      new Score(game: games[4], team: teams[2], score: 6),
-                      new Score(game: games[4], team: teams[1], score: 0),
-                      new Score(game: games[5], team: teams[0], score: 5),
-                      new Score(game: games[5], team: teams[1], score: 6),
-                      new Score(game: games[6], team: teams[0], score: 6),
-                      new Score(game: games[6], team: teams[1], score: 4),
-                      new Score(game: games[7], team: teams[0], score: 1),
-                      new Score(game: games[7], team: teams[1], score: 6),
-                      new Score(game: games[8], team: teams[1], score: 2),
-                      new Score(game: games[8], team: teams[2], score: 6),
-                      new Score(game: games[9], team: teams[2], score: 6),
-                      new Score(game: games[9], team: teams[4], score: 0)]
+        def games = [new Game(challenge: challenges[0], winnerScore: scores[0], loserScore: scores[1]),
+                     new Game(challenge: challenges[0], winnerScore: scores[2], loserScore: scores[3]),
+                     new Game(challenge: challenges[0], winnerScore: scores[4], loserScore: scores[5]),
+                     new Game(challenge: challenges[1], winnerScore: scores[6], loserScore: scores[7]),
+                     new Game(challenge: challenges[1], winnerScore: scores[8], loserScore: scores[9]),
+                     new Game(challenge: challenges[2], winnerScore: scores[10], loserScore: scores[11]),
+                     new Game(challenge: challenges[2], winnerScore: scores[12], loserScore: scores[13]),
+                     new Game(challenge: challenges[2], winnerScore: scores[14], loserScore: scores[15]),
+                     new Game(challenge: challenges[2], winnerScore: scores[16], loserScore: scores[17]),
+                     new Game(challenge: challenges[2], winnerScore: scores[18], loserScore: scores[19])]
 
         entities.addAll(players)
         entities.addAll(teams)
         entities.addAll(challenges)
-        entities.addAll(games)
         entities.addAll(scores)
+        entities.addAll(games)
 
         entities.each { entity ->
             entity.save(failOnError: true, validate: true)
