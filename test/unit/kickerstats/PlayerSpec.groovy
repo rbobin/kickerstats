@@ -42,7 +42,7 @@ class PlayerSpec extends Specification {
         !player.validate()
         player.hasErrors()
         1 == player.errors.errorCount
-        player.errors.allErrors.first().codes.contains("player.nickname.maxSize.error")
+        player.errors.allErrors.first().codes.contains("player.nickname.size.error")
 
         when: "player has nickname less than or exactly 20 characters"
         player.setNickname("12345678901234567890")
@@ -84,7 +84,7 @@ class PlayerSpec extends Specification {
         !player.validate()
         player.hasErrors()
         1 == player.errors.errorCount
-        player.errors.allErrors.first().codes.contains("player.firstname.maxSize.error")
+        player.errors.allErrors.first().codes.contains("player.firstname.size.error")
 
         when: "player has first name less than or exactly 20 characters"
         player.setFirstname("12345678901234567890")
@@ -114,7 +114,7 @@ class PlayerSpec extends Specification {
         !player.validate()
         player.hasErrors()
         1 == player.errors.errorCount
-        player.errors.allErrors.first().codes.contains("player.lastname.maxSize.error")
+        player.errors.allErrors.first().codes.contains("player.lastname.size.error")
 
         when: "player has last name less than or exactly 20 characters"
         player.setLastname("12345678901234567890")

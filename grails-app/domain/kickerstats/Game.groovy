@@ -2,24 +2,29 @@ package kickerstats
 
 class Game implements Serializable {
 
-    Challenge challenge
     Score winnerScore
     Score loserScore
 
     static belongsTo = [challenge: Challenge]
 
     static constraints = {
-        winnerScore(nullable: false, validator: { score, object, errors ->
+        winnerScore nullable: false, validator: { score, object, errors ->
             if (score.score != Score.MAX_SCORE)
-                errors.reject("game.winnerScore.nomaxscore")
-        })
-        loserScore(nullable: false, validator: { score, object, errors ->
+                errors.rejectValue(
+                        "winnerScore",
+                        "game.winnerScore.nomaxscore",
+                        "Winner score must be equal to maximum score")
+        }
+        loserScore nullable: false, validator: { score, object, errors ->
             if (score.score == Score.MAX_SCORE)
-                errors.reject("game.scores.score.twomaxscores")
-            else if (score.team == object.winnerScore?.team)
-                errors.reject("game.scores.team.sameteam")
+                errors.rejectValue(
+                        "loserScore",
+                        "game.loserScore.maxscore",
+                        "Loser score must be between 0 and maximum score")
+            if (score.team == object.winnerScore?.team)
+                errors.reject("game.sameteam")
             else if (score.team.getPlayers().intersect(object.winnerScore?.team?.getPlayers() ?: []))
-                errors.reject("game.scores.team.player.playerintersection")
-        })
+                errors.reject("game.playerintersection")
+        }
     }
 }

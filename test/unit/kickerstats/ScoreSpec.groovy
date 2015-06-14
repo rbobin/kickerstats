@@ -41,7 +41,7 @@ class ScoreSpec extends Specification {
         !score.validate()
         score.hasErrors()
         1 == score.errors.errorCount
-        score.errors.allErrors.first().codes.contains("score.score.min.error")
+        score.errors.allErrors.first().codes.contains("score.score.range.error")
 
         when: "score has score > MAX_SCORE"
         score.setScore(Score.MAX_SCORE + 1)
@@ -50,7 +50,7 @@ class ScoreSpec extends Specification {
         !score.validate()
         score.hasErrors()
         1 == score.errors.errorCount
-        score.errors.allErrors.first().codes.contains("score.score.max.error")
+        score.errors.allErrors.first().codes.contains("score.score.range.error")
 
         when: "score has 0 <= score <= MAX_SCORE"
         score.setScore(Score.MAX_SCORE - 1)

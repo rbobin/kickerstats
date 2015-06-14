@@ -2,7 +2,6 @@ package kickerstats
 
 class Score implements Serializable {
 
-    Game game
     Team team
     Integer score
 
@@ -13,6 +12,6 @@ class Score implements Serializable {
     static constraints = {
         game nullable: true
         team nullable: false
-        score(nullable: false, min: 0, max: MAX_SCORE)
+        score nullable: false, range: 0..MAX_SCORE
     }
 }

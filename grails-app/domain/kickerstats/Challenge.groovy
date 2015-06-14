@@ -8,9 +8,12 @@ class Challenge implements Serializable {
     static hasMany = [games: Game]
 
     static constraints = {
-        finished(nullable: false, validator: { finished, object, errors ->
+        finished nullable: false, validator: { finished, object, errors ->
             if (finished && !object.games)
-                errors.reject("challenge.finished.emptychallenge")
-        })
+                errors.rejectValue(
+                        "finished",
+                        "challenge.finished.emptychallenge",
+                        "Empty challenge can't be finished")
+        }
     }
 }

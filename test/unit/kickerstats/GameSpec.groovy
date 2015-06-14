@@ -42,13 +42,13 @@ class GameSpec extends Specification {
         game.errors.allErrors.first().codes.contains("game.loserScore.nullable.error")
 
         when: "game has invalid loser score"
-        game.setLoserScore(new Score(score: Score.MAX_SCORE))
+        game.setLoserScore(new Score(score: Score.MAX_SCORE, team: new Team()))
         game.clearErrors()
         then: "game is not valid"
         !game.validate()
         game.hasErrors()
         1 == game.errors.errorCount
-        game.errors.allErrors.first().codes.contains("game.scores.score.twomaxscores")
+        game.errors.allErrors.first().codes.contains("game.loserScore.maxscore")
 
         when: "game has same team associated with both scores"
         game.setLoserScore(new Score(score: Score.MAX_SCORE - 1))
@@ -60,7 +60,7 @@ class GameSpec extends Specification {
         !game.validate()
         game.hasErrors()
         1 == game.errors.errorCount
-        game.errors.allErrors.first().codes.contains("game.scores.team.sameteam")
+        game.errors.allErrors.first().codes.contains("game.sameteam")
 
         when: "game has the same player performing in both teams"
         game.winnerScore.setTeam new Team()
@@ -72,7 +72,7 @@ class GameSpec extends Specification {
         !game.validate()
         game.hasErrors()
         1 == game.errors.errorCount
-        game.errors.allErrors.first().codes.contains("game.scores.team.player.playerintersection")
+        game.errors.allErrors.first().codes.contains("game.playerintersection")
 
         when: "game has no players performing in both teams"
         game.winnerScore.team.setDefence new Player()

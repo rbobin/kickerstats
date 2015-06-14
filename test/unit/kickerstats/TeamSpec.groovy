@@ -38,7 +38,7 @@ class TeamSpec extends Specification {
         !team.validate()
         team.hasErrors()
         1 == team.errors.errorCount
-        team.errors.allErrors.first().codes.contains("team.title.maxSize.error")
+        team.errors.allErrors.first().codes.contains("team.title.size.error")
 
         when: "team has title less than or exactly 20 characters"
         team.setTitle("12345678901234567890")

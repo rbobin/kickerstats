@@ -2,11 +2,13 @@ package kickerstats
 
 class Player implements Serializable {
 
-    String firstname, lastname, nickname
+    String firstname
+    String lastname
+    String nickname
 
     static constraints = {
-        firstname(nullable: false, blank: false, maxSize: 20)
-        lastname(nullable: false, blank: false, maxSize: 20, unique: ['firstname'])
-        nickname(nullable: true, blank: false, maxSize: 20, unique: true)
+        firstname nullable: false, blank: false, size: 2..20
+        lastname nullable: false, blank: false, size: 2..20, unique: ['firstname']
+        nickname nullable: true, blank: false, size: 2..20, unique: true
     }
 }

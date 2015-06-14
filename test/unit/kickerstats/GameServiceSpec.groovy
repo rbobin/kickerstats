@@ -65,6 +65,7 @@ class GameServiceSpec extends Specification {
     def "test findByChallenge" () {
         given:
         Challenge challenge = new Challenge().save()
+        challenge.hasErrors()
         getGame(challenge).save()
         getGame(challenge).save()
 
