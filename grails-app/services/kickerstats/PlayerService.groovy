@@ -7,7 +7,11 @@ import org.hibernate.ObjectNotFoundException
 class PlayerService {
 
     @Transactional(readOnly = true)
-    def getPlayer(Long id) {
+    def getPlayer(id) {
+        id = id as Long
+        if (!id) {
+            throw new MissingPropertyException("id")
+        }
         Player player = Player.get id
         if (!player) {
             throw new ObjectNotFoundException(id, "Player")
@@ -24,7 +28,10 @@ class PlayerService {
     }
 
     def editPlayer(Map params = [:]) {
-        def id = params.id as Long
+        def id = Long.getLong(params.id?.toString())
+        if (!id) {
+            throw new MissingPropertyException("id")
+        }
         Player player = Player.get id
         if (!player) {
             throw new ObjectNotFoundException(id, "Player")

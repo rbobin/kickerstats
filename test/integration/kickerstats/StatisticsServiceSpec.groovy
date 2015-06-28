@@ -1,3 +1,5 @@
+package kickerstats
+
 import grails.test.spock.IntegrationSpec
 
 @SuppressWarnings(["GroovyAssignabilityCheck", "GrUnresolvedAccess"])

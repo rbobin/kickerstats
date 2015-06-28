@@ -10,7 +10,6 @@ class BootStrap {
 
     def init = { servletContext ->
 
-        converterBean.init()
         def entities = []
 
         def players = [new Player(firstname: "First Name 1", lastname: "Last Name 1", nickname: "Nickname 1"),

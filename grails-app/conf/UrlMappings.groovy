@@ -1,16 +1,16 @@
 class UrlMappings {
 
-	static mappings = {
+    static mappings = {
 
         "/$action"(controller: "statistics", parseRequest: true)
 
-        "/$controller/$action?/$id?(.$format)?"{
+        "/$controller/$action?/$id?(.$format)?" {
             constraints {
                 // apply constraints here
             }
         }
 
-        "/"(view:"/index")
-        "500"(view:'/error')
-	}
+        "/players/$id"(controller: "player") { action = [PUT: "edit"] }
+        "/"(view: "/index")
+    }
 }

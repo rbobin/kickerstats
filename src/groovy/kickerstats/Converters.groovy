@@ -4,7 +4,7 @@ import grails.converters.JSON
 
 class Converters {
 
-    void init() {
+    static void init() {
 
         JSON.registerObjectMarshaller(Player) { Player it ->
             return [
