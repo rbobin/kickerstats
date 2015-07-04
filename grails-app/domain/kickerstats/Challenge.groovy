@@ -3,7 +3,7 @@ package kickerstats
 class Challenge implements Serializable {
 
     Date dateCreated
-    Boolean finished = false
+    Boolean finished = false // TODO this is so lame.. do something about it!
 
     static hasMany = [games: Game]
 
@@ -14,6 +14,9 @@ class Challenge implements Serializable {
                         "finished",
                         "challenge.finished.emptychallenge",
                         "Empty challenge can't be finished")
+            if (!finished && Challenge.findAllByFinished(false).size() > 0) {
+                errors.reject("challenge.existingunfinished", "")
+            }
         }
     }
 }
