@@ -17,8 +17,23 @@ class Converters {
         JSON.registerObjectMarshaller(Team) { Team it ->
             return [
                     title  : it.title ?: "",
-                    defence: it.defence,
-                    offence: it.offence,
+                    defence: it.defence.id,
+                    offence: it.offence.id,
+            ]
+        }
+
+        JSON.registerObjectMarshaller(Challenge) { Challenge it ->
+            return [
+                    games: it.games
+            ]
+        }
+
+        JSON.registerObjectMarshaller(Game) { Game it ->
+            return [
+                    winnerScore: it.winnerScore.score,
+                    winnerTeam : it.winnerScore.team.id,
+                    loserScore : it.loserScore.score,
+                    loserTeam  : it.loserScore.team.id
             ]
         }
     }

@@ -3,18 +3,25 @@ package kickerstats
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 
-/**
- * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
- */
 @TestFor(ChallengeController)
 class ChallengeControllerSpec extends Specification {
 
-    def setup() {
-    }
+    def "test createChallenge"() {
+        given:
+        null == Challenge.findByFinished(false)
+        when:
+        controller.createChallenge()
+        then:
+        200 == response.status
+        response.json.success
+        1 == Challenge.findAllByFinished(false).size()
 
-    def cleanup() {
-    }
-
-    void "test something"() {
+        when:
+        controller.createChallenge()
+        then:
+        409 == response.status
+        !response.json.success
+        ['Unable to start new challenge: finish current challenge first'] == response.json.errors
+        1 == Challenge.findAllByFinished(false).size()
     }
 }
