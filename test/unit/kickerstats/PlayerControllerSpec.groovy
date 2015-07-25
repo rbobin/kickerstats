@@ -6,6 +6,7 @@ import spock.lang.Specification
 
 @TestFor(PlayerController)
 @Mock(Player)
+@SuppressWarnings("GroovyAssignabilityCheck")
 class PlayerControllerSpec extends Specification {
 
     def "test findPlayer"() {
@@ -15,18 +16,18 @@ class PlayerControllerSpec extends Specification {
         when:
         controller.findPlayer()
         then:
-        400 == response.status
+        404 == response.status
         !response.json.success
-        ['Missing id parameter'] == response.json.errors
+        ['player not found'] == response.json.errors
 
         when:
         params.id = 'abc'
         response.reset()
         controller.findPlayer()
         then:
-        400 == response.status
+        404 == response.status
         !response.json.success
-        ['id parameter must be of type long'] == response.json.errors
+        ['player not found'] == response.json.errors
 
         when:
         params.id = '-1'
@@ -66,7 +67,7 @@ class PlayerControllerSpec extends Specification {
         response.reset()
         controller.createPlayer()
         then:
-        201 == response.status
+        200 == response.status
         response.json.success
         !response.json.errors
         'Firstname' == response.json.player.firstname
@@ -80,18 +81,18 @@ class PlayerControllerSpec extends Specification {
         when:
         controller.updatePlayer()
         then:
-        400 == response.status
+        404 == response.status
         !response.json.success
-        ['Missing id parameter'] == response.json.errors
+        ['player not found'] == response.json.errors
 
         when:
         params.id = 'abc'
         response.reset()
         controller.updatePlayer()
         then:
-        400 == response.status
+        404 == response.status
         !response.json.success
-        ['id parameter must be of type long'] == response.json.errors
+        ['player not found'] == response.json.errors
 
         when:
         params.id = '-1'
