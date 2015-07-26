@@ -3,10 +3,10 @@ package kickerstats
 class PlayerController extends BaseController {
 
     def findPlayer(Player player) {
-        if (!player) {
-            renderNotFound("player")
-        } else {
+        if (player) {
             renderSuccess(player: player)
+        } else {
+            renderNotFound("player")
         }
     }
 
@@ -20,15 +20,15 @@ class PlayerController extends BaseController {
     }
 
     def updatePlayer(Player player) {
-        if (!player) {
-            renderNotFound("player")
-        } else {
+        if (player) {
             player.properties = params
             if (player.save()) {
                 renderSuccess(player: player)
             } else {
                 renderValidationErrors(player)
             }
+        } else {
+            renderNotFound("player")
         }
     }
 }
