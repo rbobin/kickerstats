@@ -13,7 +13,6 @@ class GameControllerSpec extends Specification {
 
     def "test createGame"() {
         given:
-        mockCommandObject GameCommand
         new Challenge(current: true).save()
 
         when:

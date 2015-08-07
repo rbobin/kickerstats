@@ -51,7 +51,6 @@ class TeamControllerSpec extends Specification {
     }
 
     def "test createTeam"() {
-        mockCommandObject(TeamCommand)
         when:
         controller.createTeam()
         then:

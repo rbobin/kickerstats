@@ -4,31 +4,30 @@ class PlayerController extends BaseController {
 
     def findPlayer(Player player) {
         if (player) {
-            renderSuccess(player: player)
+            renderSuccess player: player
         } else {
-            renderNotFound("player")
+            renderNotFound "player"
         }
     }
 
     def createPlayer() {
-        Player player = new Player(params)
-        if (player.save()) {
-            renderSuccess(player: player)
-        } else {
-            renderValidationErrors(player)
-        }
+        save new Player(params)
     }
 
     def updatePlayer(Player player) {
         if (player) {
             player.properties = params
-            if (player.save()) {
-                renderSuccess(player: player)
-            } else {
-                renderValidationErrors(player)
-            }
+            save player
         } else {
-            renderNotFound("player")
+            renderNotFound "player"
+        }
+    }
+
+    private void save(Player player) {
+        if (player.save()) {
+            renderSuccess player: player
+        } else {
+            renderValidationErrors player
         }
     }
 }

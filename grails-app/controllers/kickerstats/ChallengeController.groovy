@@ -1,27 +1,16 @@
 package kickerstats
 
-import grails.converters.JSON
-
 class ChallengeController extends BaseController {
 
     def createChallenge() {
-        if (currentChallenge || !(new Challenge().save(flush: true))) {
-            renderConflict('Unable to start new challenge: finish current challenge first')
-            return
+        if (Challenge.currentChallenge || !(new Challenge().save(flush: true))) {
+            renderConflict 'Unable to start new challenge: finish current challenge first'
+        } else {
+            renderSuccess challenge: Challenge.currentChallenge
         }
-
-        render([success: true] as JSON)
     }
 
     def findCurrentChallenge() {
-        def responseMap = [
-                success  : true,
-                challenge: currentChallenge
-        ]
-        render(responseMap as JSON)
-    }
-
-    private getCurrentChallenge() {
-        Challenge.findByFinished(false)
+        renderSuccess challenge: Challenge.currentChallenge
     }
 }

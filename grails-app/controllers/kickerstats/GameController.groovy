@@ -2,12 +2,12 @@ package kickerstats
 
 class GameController extends BaseController {
 
-    def createGame(GameCommand gameCommand) {
-        Game game = gameCommand.game
+    def createGame() {
+        Game game = new Game(params)
         if (game.save()) {
-            renderSuccess(game: game)
+            renderSuccess game: game
         } else {
-            renderValidationErrors(game)
+            renderValidationErrors game
         }
     }
 
@@ -16,24 +16,7 @@ class GameController extends BaseController {
             game.delete()
             renderSuccess()
         } else {
-            renderNotFound("game")
+            renderNotFound "game"
         }
-    }
-}
-
-class GameCommand {
-
-    Team winners
-    Team losers
-    Integer winnersScore
-    Integer losersScore
-
-    def getGame() {
-        new Game(
-                winners: winners,
-                losers: losers,
-                winnersScore: winnersScore,
-                losersScore: losersScore
-        )
     }
 }

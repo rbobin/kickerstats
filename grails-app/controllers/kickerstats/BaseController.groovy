@@ -13,14 +13,10 @@ class BaseController {
                      NOT_FOUND = 404,
                      CONFlICT = 409
 
-    protected renderMissingParameter(parameter) {
-        response.setStatus BAD_REQUEST
-        render([success: false, errors: ["missing $parameter parameter"]] as JSON)
-    }
-
-    protected renderWrongType(parameter, type) {
-        response.setStatus BAD_REQUEST
-        render([success: false, errors: ["$parameter parameter must be of type $type"]] as JSON)
+    protected renderSuccess(Map responseMap = [:]) {
+        response.setStatus SUCCESS
+        responseMap.success = true
+        render(responseMap as JSON)
     }
 
     protected renderNotFound(entity) {
