@@ -2,29 +2,46 @@ package kickerstats
 
 class Game implements Serializable {
 
-    Score winnerScore
-    Score loserScore
+    Team winners
+    Team losers
+    Integer winnersScore
+    Integer losersScore
+
+    final static Integer MAX_SCORE = 6;
 
     static belongsTo = [challenge: Challenge]
 
     static constraints = {
-        winnerScore nullable: false, validator: { score, object, errors ->
-            if (score.score != Score.MAX_SCORE)
-                errors.rejectValue(
-                        "winnerScore",
-                        "game.winnerScore.nomaxscore",
-                        "Winner score must be equal to maximum score")
+        winners nullable: false
+        losers nullable: false, validator: { losers, object, errors ->
+            if (losers && object.winners) {
+                if (losers.id && object.winners.id && losers.id == object.winners.id) {
+                    errors.reject("game.sameteam",
+                            "Same team playing detected")
+                } else if (losers.players*.id.intersect(object.winners.players*.id)) {
+                    errors.reject("game.playerintersection",
+                            "Player performing in both teams detected")
+                }
+            }
         }
-        loserScore nullable: false, validator: { score, object, errors ->
-            if (score.score == Score.MAX_SCORE)
-                errors.rejectValue(
-                        "loserScore",
-                        "game.loserScore.maxscore",
-                        "Loser score must be between 0 and maximum score")
-            if (score.team == object.winnerScore?.team)
-                errors.reject("game.sameteam")
-            else if (score.team.getPlayers().intersect(object.winnerScore?.team?.getPlayers() ?: []))
-                errors.reject("game.playerintersection")
+        winnersScore nullable: false, validator: { winnersScore, object, errors ->
+            if (winnersScore != MAX_SCORE) {
+                errors.rejectValue('winnersScore',
+                        "game.winnersScore.notmax",
+                        "Winners score must be $MAX_SCORE")
+            }
         }
+        losersScore nullable: false, range: 0..(MAX_SCORE - 1)
+        challenge validator: { challenge, object, errors ->
+            if (!object.id && !challenge.current) {
+                errors.reject(
+                        "game.challenge.current",
+                        "Unable add a game to not current challenge")
+            }
+        }
+    }
+
+    def beforeValidate() {
+        this.challenge = Challenge.currentChallenge
     }
 }

@@ -3,20 +3,21 @@ package kickerstats
 class Challenge implements Serializable {
 
     Date dateCreated
-    Boolean finished = false // TODO this is so lame.. do something about it!
+    Boolean current = true
 
     static hasMany = [games: Game]
 
     static constraints = {
-        finished nullable: false, validator: { finished, object, errors ->
-            if (finished && !object.games)
+        current nullable: true, unique: true, validator: { current, object, errors ->
+            if (!current && !object.games)
                 errors.rejectValue(
-                        "finished",
+                        "current",
                         "challenge.finished.emptychallenge",
                         "Empty challenge can't be finished")
-            if (!finished && Challenge.findAllByFinished(false).size() > 0) {
-                errors.reject("challenge.existingunfinished", "")
-            }
         }
+    }
+
+    static Challenge getCurrentChallenge() {
+        findByCurrent(true)
     }
 }
