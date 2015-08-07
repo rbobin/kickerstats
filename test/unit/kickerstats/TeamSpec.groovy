@@ -2,6 +2,7 @@ package kickerstats
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
+import kickerstats.utils.InstanceGenerator
 import spock.lang.Specification
 
 
@@ -11,11 +12,12 @@ class TeamSpec extends Specification {
 
     def "test Team constraints"() {
         given:
-        Player existingOffencePlayer = new Player()
-        Player existingDefencePlayer = new Player()
-        Team existingTeam = new Team(offence: existingOffencePlayer, defence: existingDefencePlayer)
+        Player existingOffencePlayer = InstanceGenerator.generatePlayer()
+        Player existingDefencePlayer = InstanceGenerator.generatePlayer()
+        Team existingTeam = InstanceGenerator.generateTeam(existingOffencePlayer, existingDefencePlayer)
         mockForConstraintsTests(Team, [existingTeam])
-        Team team = new Team(defence: new Player(), offence: new Player())
+        Team team = new Team(defence: InstanceGenerator.generatePlayer(),
+                offence: InstanceGenerator.generatePlayer())
 
         when: "team has no title"
         team.setTitle(null)
@@ -56,7 +58,7 @@ class TeamSpec extends Specification {
         team.errors.allErrors.first().codes.contains("team.defence.nullable")
 
         when: "team has defence"
-        team.setDefence(new Player())
+        team.setDefence(InstanceGenerator.generatePlayer())
         team.clearErrors()
         then: "team is valid"
         team.validate()
@@ -90,7 +92,7 @@ class TeamSpec extends Specification {
         team.errors.allErrors.first().codes.contains("unique.kickerstats.Team.offence")
 
         when: "team players are different"
-        team.setDefence(new Player())
+        team.setDefence(InstanceGenerator.generatePlayer())
         team.clearErrors()
         then: "team is valid"
         team.validate()
