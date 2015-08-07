@@ -5,7 +5,7 @@ import grails.test.mixin.TestFor
 import spock.lang.Specification
 
 @TestFor(Challenge)
-@Mock([Challenge, Game, Score, Team, Player])
+@Mock([Challenge, Game, Team, Player])
 class ChallengeSpec extends Specification {
 
     def "test Challenge constraints"() {
