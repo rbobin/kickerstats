@@ -2,6 +2,7 @@ package kickerstats
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
+import kickerstats.utils.InstanceGenerator
 import spock.lang.Specification
 
 @TestFor(Challenge)
@@ -9,27 +10,25 @@ import spock.lang.Specification
 class ChallengeSpec extends Specification {
 
     def "test Challenge constraints"() {
-        given:
-        mockForConstraintsTests(Challenge)
-        Challenge challenge = new Challenge()
+        given: "empty not current challenge"
+        mockForConstraintsTests Challenge
+        Challenge challenge = new Challenge(current: null)
 
-        when: "challenge is finished and has no games associated"
-        challenge.setFinished(true)
-        then: "challenge is not valid"
+        expect: "challenge is not valid"
         !challenge.validate()
         challenge.hasErrors()
         1 == challenge.errors.errorCount
-        challenge.errors.allErrors.first().codes.contains("challenge.finished.emptychallenge")
+        challenge.errors.allErrors.first().codes.contains "challenge.finished.emptychallenge"
 
-        when: "challenge is finished and has at least one game associated"
-        challenge.addToGames(new Game())
+        when: "challenge is not current and has at least one game associated"
+        challenge.addToGames InstanceGenerator.generateGame()
         challenge.clearErrors()
         then: "challenge is valid"
         challenge.validate()
         !challenge.hasErrors()
 
-        when: "challenge is not finished and has no games associated"
-        challenge.setFinished(false)
+        when: "challenge is current and has no games associated"
+        challenge.current = true
         challenge.games.clear()
         challenge.clearErrors()
         then: "challenge is valid"
